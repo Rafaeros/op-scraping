@@ -26,7 +26,7 @@ class Scraping:
      self.username = username
      self.password = password
     
-  def init_scraping(self) -> json.dumps:
+  def init_scraping(self) -> str:
     try:
       # Simulando Login
       self.navegador.get('https://web.cargamaquina.com.br/site/login?c=31.1~78%2C8%5E56%2C8')
@@ -40,7 +40,8 @@ class Scraping:
       time.sleep(5)
 
       self.navegador.get("https://web.cargamaquina.com.br/ordemProducao/exportarOrdens?OrdemProducao%5Bcodigo%5D=&OrdemProducao%5B_nomeCliente%5D=&OrdemProducao%5B_nomeMaterial%5D=&OrdemProducao%5Bstatus_op_id%5D=Todos&OrdemProducao%5B_etapasPlanejadas%5D=&OrdemProducao%5Bforecast%5D=0&OrdemProducao%5B_inicioCriacao%5D=&OrdemProducao%5B_fimCriacao%5D=&OrdemProducao%5B_inicioEntrega%5D=01%2F07%2F2024&OrdemProducao%5B_fimEntrega%5D=31%2F07%2F2024&OrdemProducao%5B_limparFiltro%5D=0&pageSize=20")
-      time.sleep(35)
+      self.navegador.encoding = 'utf-8'
+      time.sleep(15)
 
       # Elemento HTML
       trs = self.navegador.find_elements(By.TAG_NAME, "tr")[1:]
@@ -53,10 +54,20 @@ class Scraping:
         cod_material: str = tr.find_elements(By.TAG_NAME, "td")[4].text
         material: str = tr.find_elements(By.TAG_NAME, "td")[5].text
         quantidade: int = int(tr.find_elements(By.TAG_NAME, "td")[6].text)
+  
         Ops.create(entrega, codigo, cliente, cod_material, material, quantidade)
+    
+      # Formatando as ordens de produção para formato JSON decofidicado para UTF-8
+      json_string = json.dumps(Ops.get_instances(), indent=2, ensure_ascii=False)
+      json_string.encode("utf-8")
 
-        with open("ordens_producao.json", "w", encoding="utf-8") as f:
-          json.dump(Ops.get_instances(), f, indent=2)
+      with open("ordens_producao.json", "w", encoding="utf-8") as f:
+        json.dump(json_string, f, indent=2, ensure_ascii=False)
+
+      time.sleep(1)
+
+      return json_string
+
     except Exception as e:
       print("Error: ", e)
     finally:
