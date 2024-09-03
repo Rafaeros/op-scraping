@@ -41,14 +41,14 @@ class Scraping:
 
       self.navegador.get("https://web.cargamaquina.com.br/ordemProducao/exportarOrdens?OrdemProducao%5Bcodigo%5D=&OrdemProducao%5B_nomeCliente%5D=&OrdemProducao%5B_nomeMaterial%5D=&OrdemProducao%5Bstatus_op_id%5D=Todos&OrdemProducao%5B_etapasPlanejadas%5D=&OrdemProducao%5Bforecast%5D=0&OrdemProducao%5B_inicioCriacao%5D=&OrdemProducao%5B_fimCriacao%5D=&OrdemProducao%5B_inicioEntrega%5D=01%2F07%2F2024&OrdemProducao%5B_fimEntrega%5D=31%2F07%2F2024&OrdemProducao%5B_limparFiltro%5D=0&pageSize=20")
       self.navegador.encoding = 'utf-8'
-      time.sleep(15)
+      time.sleep(10)
 
       # Elemento HTML
       trs = self.navegador.find_elements(By.TAG_NAME, "tr")[1:]
 
       # Iterando a pagina para coleta dos dados das Ordens de Produção e passando para uma classe
       for tr in trs:
-        entrega: str = tr.find_elements(By.TAG_NAME, "td")[1].text
+        entrega: str = tr.find_elements(By.TAG_NAME, "td")[1].text.split(" ")[0]
         codigo: str = tr.find_elements(By.TAG_NAME, "td")[2].text
         cliente: str = tr.find_elements(By.TAG_NAME, "td")[3].text
         cod_material: str = tr.find_elements(By.TAG_NAME, "td")[4].text
@@ -62,7 +62,7 @@ class Scraping:
       json_string.encode("utf-8")
 
       with open("ordens_producao.json", "w", encoding="utf-8") as f:
-        json.dump(json_string, f, indent=2, ensure_ascii=False)
+        json.dump(Ops.get_instances(), f, indent=2, ensure_ascii=False)
 
       time.sleep(1)
 
