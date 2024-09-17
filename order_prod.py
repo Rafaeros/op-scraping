@@ -9,15 +9,16 @@ class OrdemDeProducao:
     cod_material: str #4 td
     material: str #5 td
     quantidade: int # 6 td
+    nfes: list[int]
     
 class OrdensDeProducao:
     # Atributo de classe para armazenar a lista de dicionários
     instances: dict[str, str] = {}
 
     @classmethod
-    def create(cls, entrega, codigo, cliente, cod_material, material, quantidade) -> None:
+    def create(cls, entrega: str, codigo: str, cliente: str, cod_material: str, material: str, quantidade: int, nfes: list[int]) -> None:
         # Cria uma nova instância de OP
-        instance = OrdemDeProducao(entrega, codigo, cliente, cod_material, material, quantidade)
+        instance = OrdemDeProducao(entrega, codigo, cliente, cod_material, material, quantidade, nfes)
         cls.instances[instance.codigo] = asdict(instance)
 
     @classmethod

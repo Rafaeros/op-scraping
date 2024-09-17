@@ -9,11 +9,11 @@ class Scraping:
   def init_scraping(self) -> str:
     try:
       cookies: dict = {
-        
+         
       }
 
       headers: dict = {
-      
+         
       }
 
       params: dict = {
@@ -25,8 +25,8 @@ class Scraping:
           'OrdemProducao[forecast]': '0',
           'OrdemProducao[_inicioCriacao]': '',
           'OrdemProducao[_fimCriacao]': '',
-          'OrdemProducao[_inicioEntrega]': '01/05/2024',
-          'OrdemProducao[_fimEntrega]': '06/05/2024',
+          'OrdemProducao[_inicioEntrega]': '09/09/2024',
+          'OrdemProducao[_fimEntrega]': '09/09/2024',
           'OrdemProducao[_limparFiltro]': '0',
           'pageSize': '20',
       }
@@ -38,31 +38,37 @@ class Scraping:
           headers=headers,
       )
 
-      soup: BeautifulSoup = BeautifulSoup(response.content, 'html.parser')
+      if response.ok:
 
-      trs = soup.find_all('tr')[1:]
+        soup = BeautifulSoup(response.content, 'html.parser')
 
-      # Iterando a pagina para coleta dos dados das Ordens de Produção e passando para uma classe
-      for tr in trs:
-        entrega: str = tr.find_all("td")[1].get_text(separator='', strip=True).split(" ")[0]
-        codigo: str = tr.find_all("td")[2].get_text(separator='', strip=True)
-        cliente: str = tr.find_all("td")[3].get_text(separator='', strip=True)
-        cod_material: str = tr.find_all("td")[4].get_text(separator='', strip=True)
-        material: str = tr.find_all("td")[5].get_text(separator='', strip=True)
-        quantidade: int = int(tr.find_all("td")[6].get_text(separator='', strip=True))
-  
-        Ops.create(entrega, codigo, cliente, cod_material, material, quantidade)
-    
-      # Formatando as ordens de produção para formato JSON decofidicado para UTF-8
-      json_string = json.dumps(Ops.get_instances(), indent=2, ensure_ascii=False)
-      json_string.encode("utf-8")
+        trs = soup.find_all('tr')[1:]
 
-      with open("ordens_producao.json", "w", encoding='utf-8') as f:
-        json.dump(Ops.get_instances(), f, indent=2, ensure_ascii=False)
+        # Iterando a pagina para coleta dos dados das Ordens de Produção e passando para uma classe
+        for tr in trs:
+          entrega: str = tr.find_all("td")[1].get_text(separator='', strip=True).split(" ")[0]
+          codigo: str = tr.find_all("td")[2].get_text(separator='', strip=True)
+          cliente: str = tr.find_all("td")[3].get_text(separator='', strip=True)
+          cod_material: str = tr.find_all("td")[4].get_text(separator='', strip=True)
+          material: str = tr.find_all("td")[5].get_text(separator='', strip=True)
+          quantidade: int = int(tr.find_all("td")[6].get_text(separator='', strip=True))
+          nfes: list[int] = [int(nfe) for nfe in tr.find_all("td")[10].get_text(separator='', strip=True).split("-") if nfe.isdigit()]
 
-      time.sleep(0.5)
+          Ops.create(entrega, codigo, cliente, cod_material, material, quantidade, nfes)
 
-      return json_string
+        # Formatando as ordens de produção para formato JSON decofidicado para UTF-8
+        json_string: str = json.dumps(Ops.get_instances(), indent=2, ensure_ascii=False)
+        json_string.encode("utf-8")
 
-    except Exception as e:
-      print("Error: ", e)
+        with open("ordens_producao.json", "w", encoding='utf-8') as f:
+          json.dump(Ops.get_instances(), f, indent=2, ensure_ascii=False)
+
+        time.sleep(0.5)
+
+        return json_string
+      else:
+        print("Não foi possivel fazer a requisição:", response.status_code)
+        return
+
+    except requests.exceptions.RequestException as e:
+      print("error: %s" % e)
