@@ -8,15 +8,15 @@ import time
 class Scraping:
   def init_scraping(self) -> str:
     try:
-      cookies: dict = {
-         
+      cookies = {
+
       }
 
-      headers: dict = {
-         
+      headers = {
+
       }
 
-      params: dict = {
+      params = {
           'OrdemProducao[codigo]': '',
           'OrdemProducao[_nomeCliente]': '',
           'OrdemProducao[_nomeMaterial]': '',
@@ -25,8 +25,8 @@ class Scraping:
           'OrdemProducao[forecast]': '0',
           'OrdemProducao[_inicioCriacao]': '',
           'OrdemProducao[_fimCriacao]': '',
-          'OrdemProducao[_inicioEntrega]': '09/09/2024',
-          'OrdemProducao[_fimEntrega]': '09/09/2024',
+          'OrdemProducao[_inicioEntrega]': '01/09/2024',
+          'OrdemProducao[_fimEntrega]': '19/09/2024',
           'OrdemProducao[_limparFiltro]': '0',
           'pageSize': '20',
       }
@@ -46,15 +46,15 @@ class Scraping:
 
         # Iterando a pagina para coleta dos dados das Ordens de Produção e passando para uma classe
         for tr in trs:
-          entrega: str = tr.find_all("td")[1].get_text(separator='', strip=True).split(" ")[0]
-          codigo: str = tr.find_all("td")[2].get_text(separator='', strip=True)
+          dataEntrega: str = tr.find_all("td")[1].get_text(separator='', strip=True).split(" ")[0]
+          codigoOrdemProducao: str = tr.find_all("td")[2].get_text(separator='', strip=True)
           cliente: str = tr.find_all("td")[3].get_text(separator='', strip=True)
-          cod_material: str = tr.find_all("td")[4].get_text(separator='', strip=True)
-          material: str = tr.find_all("td")[5].get_text(separator='', strip=True)
+          codigoMaterial: str = tr.find_all("td")[4].get_text(separator='', strip=True)
+          descricaoMaterial: str = tr.find_all("td")[5].get_text(separator='', strip=True)
           quantidade: int = int(tr.find_all("td")[6].get_text(separator='', strip=True))
           nfes: list[int] = [int(nfe) for nfe in tr.find_all("td")[10].get_text(separator='', strip=True).split("-") if nfe.isdigit()]
 
-          Ops.create(entrega, codigo, cliente, cod_material, material, quantidade, nfes)
+          Ops.create(dataEntrega, codigoOrdemProducao, cliente, codigoMaterial, descricaoMaterial, quantidade, nfes)
 
         # Formatando as ordens de produção para formato JSON decofidicado para UTF-8
         json_string: str = json.dumps(Ops.get_instances(), indent=2, ensure_ascii=False)
