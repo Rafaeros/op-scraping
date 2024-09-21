@@ -3,11 +3,11 @@ from dataclasses import dataclass, asdict
 @dataclass
 class OrdemDeProducao:
     # Atributos Principais
-    entrega: str #1 td
-    codigo: str #2 td
+    dataEntrega: str #1 td
+    codigoOrdemProducao: str #2 td
     cliente: str #3 td
-    cod_material: str #4 td
-    material: str #5 td
+    codigoMaterial: str #4 td
+    descricaoMaterial: str #5 td
     quantidade: int # 6 td
     nfes: list[int]
     
@@ -16,9 +16,9 @@ class OrdensDeProducao:
     instances: dict[str, str] = {}
 
     @classmethod
-    def create(cls, entrega: str, codigo: str, cliente: str, cod_material: str, material: str, quantidade: int, nfes: list[int]) -> None:
+    def create(cls, dataEntrega: str, codigoOrdemProducao: str, cliente: str, codigoMaterial: str, descricaoMaterial: str, quantidade: int, nfes: list[int]) -> None:
         # Cria uma nova instância de OP
-        instance = OrdemDeProducao(entrega, codigo, cliente, cod_material, material, quantidade, nfes)
+        instance = OrdemDeProducao(dataEntrega, codigoOrdemProducao, cliente, codigoMaterial, descricaoMaterial, quantidade, nfes)
         cls.instances[instance.codigo] = asdict(instance)
 
     @classmethod
