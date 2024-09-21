@@ -19,7 +19,7 @@ class OrdensDeProducao:
     def create(cls, dataEntrega: str, codigoOrdemProducao: str, cliente: str, codigoMaterial: str, descricaoMaterial: str, quantidade: int, nfes: list[int]) -> None:
         # Cria uma nova instância de OP
         instance = OrdemDeProducao(dataEntrega, codigoOrdemProducao, cliente, codigoMaterial, descricaoMaterial, quantidade, nfes)
-        cls.instances[instance.codigo] = asdict(instance)
+        cls.instances[instance.codigoOrdemProducao] = asdict(instance)
 
     @classmethod
     def get_instances(cls) -> "OrdensDeProducao":
