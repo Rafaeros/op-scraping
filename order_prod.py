@@ -4,7 +4,7 @@ from dataclasses import dataclass, asdict
 class OrdemDeProducao:
     # Atributos Principais
     dataEntrega: str #1 td
-    codigoOrdemProducao: str #2 td
+    codigoOrdemProducao: int #2 td
     cliente: str #3 td
     codigoMaterial: str #4 td
     descricaoMaterial: str #5 td
@@ -13,10 +13,10 @@ class OrdemDeProducao:
     
 class OrdensDeProducao:
     # Atributo de classe para armazenar a lista de dicionários
-    instances: dict[str, str] = {}
+    instances: dict[int, int] = {}
 
     @classmethod
-    def create(cls, dataEntrega: str, codigoOrdemProducao: str, cliente: str, codigoMaterial: str, descricaoMaterial: str, quantidade: int, nfes: list[int]) -> None:
+    def create(cls, dataEntrega: str, codigoOrdemProducao: int, cliente: str, codigoMaterial: str, descricaoMaterial: str, quantidade: int, nfes: list[int]) -> None:
         # Cria uma nova instância de OP
         instance = OrdemDeProducao(dataEntrega, codigoOrdemProducao, cliente, codigoMaterial, descricaoMaterial, quantidade, nfes)
         cls.instances[instance.codigoOrdemProducao] = asdict(instance)
@@ -26,5 +26,5 @@ class OrdensDeProducao:
         return cls.instances
 
     @classmethod
-    def find_by_codigo(cls, codigo) -> dict[str, str]:
+    def find_by_codigo(cls, codigo) -> dict[int, int]:
         return cls.instances.get(codigo, None)
