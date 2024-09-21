@@ -8,14 +8,9 @@ import time
 class Scraping:
   def init_scraping(self) -> str:
     try:
-      cookies = {
+      login_payload = {
 
       }
-
-      headers = {
-
-      }
-
       params = {
           'OrdemProducao[codigo]': '',
           'OrdemProducao[_nomeCliente]': '',
@@ -26,22 +21,21 @@ class Scraping:
           'OrdemProducao[_inicioCriacao]': '',
           'OrdemProducao[_fimCriacao]': '',
           'OrdemProducao[_inicioEntrega]': '01/09/2024',
-          'OrdemProducao[_fimEntrega]': '19/09/2024',
+          'OrdemProducao[_fimEntrega]': '05/09/2024',
           'OrdemProducao[_limparFiltro]': '0',
           'pageSize': '20',
       }
 
-      response = requests.get(
-          url='https://app.cargamaquina.com.br/ordemProducao/exportarOrdens',
-          params=params,
-          cookies=cookies,
-          headers=headers,
-      )
+      with requests.Session() as s:
+        s.post('https://app.cargamaquina.com.br/site/login?c=31.1~78%2C8%5E56%2C8', data=login_payload)
+        response = s.get('https://app.cargamaquina.com.br/ordemProducao/exportarOrdens', params=params)
 
       if response.ok:
 
+        # Convertendo get do scraping para html
         soup = BeautifulSoup(response.content, 'html.parser')
 
+        # Pegando todos table rows da tabela a partir do 1°
         trs = soup.find_all('tr')[1:]
 
         # Iterando a pagina para coleta dos dados das Ordens de Produção e passando para uma classe
