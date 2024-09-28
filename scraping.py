@@ -9,7 +9,10 @@ class Scraping:
   def init_scraping(self) -> str:
     try:
       login_payload = {
-
+        "LoginForm[username]": "",
+        "LoginForm[password]": "",
+        "LoginForm[codigoConexao]": "",
+        "yt0": "Entrar"
       }
       params = {
           'OrdemProducao[codigo]': '',
@@ -41,7 +44,7 @@ class Scraping:
         # Iterando a pagina para coleta dos dados das Ordens de Produção e passando para uma classe
         for tr in trs:
           dataEntrega: str = tr.find_all("td")[1].get_text(separator='', strip=True).split(" ")[0]
-          codigoOrdemProducao: str = tr.find_all("td")[2].get_text(separator='', strip=True)
+          codigoOrdemProducao: int = int(tr.find_all("td")[2].get_text(separator='', strip=True).split('-')[-1])
           cliente: str = tr.find_all("td")[3].get_text(separator='', strip=True)
           codigoMaterial: str = tr.find_all("td")[4].get_text(separator='', strip=True)
           descricaoMaterial: str = tr.find_all("td")[5].get_text(separator='', strip=True)
