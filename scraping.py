@@ -11,7 +11,7 @@ class Scraping:
       login_payload = {
         "LoginForm[username]": "",
         "LoginForm[password]": "",
-        "LoginForm[codigoConexao]": "",
+        "LoginForm[codigoConexao]": "31.1~78,8^56,8",
         "yt0": "Entrar"
       }
       params = {
