@@ -24,7 +24,7 @@ class Scraping:
           'OrdemProducao[_inicioCriacao]': '',
           'OrdemProducao[_fimCriacao]': '',
           'OrdemProducao[_inicioEntrega]': '01/09/2024',
-          'OrdemProducao[_fimEntrega]': '05/09/2024',
+          'OrdemProducao[_fimEntrega]': '02/09/2024',
           'OrdemProducao[_limparFiltro]': '0',
           'pageSize': '20',
       }
@@ -54,14 +54,11 @@ class Scraping:
           Ops.create(dataEntrega, codigoOrdemProducao, cliente, codigoMaterial, descricaoMaterial, quantidade, nfes)
 
         # Formatando as ordens de produção para formato JSON decofidicado para UTF-8
-        json_string: str = json.dumps(Ops.get_instances(), indent=2, ensure_ascii=False)
+        json_string: str = Ops.to_json()
         json_string.encode("utf-8")
 
-        with open("ordens_producao.json", "w", encoding='utf-8') as f:
-          json.dump(Ops.get_instances(), f, indent=2, ensure_ascii=False)
-
-        time.sleep(0.5)
-
+        # Salvando as ordens de produção no arquivo JSON
+        Ops.save_json_file()
         return json_string
       else:
         print("Não foi possivel fazer a requisição:", response.status_code)
