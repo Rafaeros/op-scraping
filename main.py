@@ -2,7 +2,7 @@ from scraping import Scraping
 import requests
 
 if __name__ == '__main__':
-    URL: str = "http://localhost:8090/api/v1/ordem_producao"
+    URL: str = "http://localhost:8090/api/v1/scraping"
     S = Scraping()
     json_request: str = S.init_scraping()
 

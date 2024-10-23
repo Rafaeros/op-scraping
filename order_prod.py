@@ -10,14 +10,15 @@ class OrdemDeProducao:
     codigoMaterial: str #4 td
     descricaoMaterial: str #5 td
     quantidade: int # 6 td
+    status: str # 7 td
     nfes: list[int]
 class OrdensDeProducao:
     # Atributo de classe para armazenar a lista de dicionários
     instances: dict[str, dict] = {}
     @classmethod
-    def create(cls, dataEntrega: str, codigoOrdemProducao: int, cliente: str, codigoMaterial: str, descricaoMaterial: str, quantidade: int, nfes: list[int]) -> None:
+    def create(cls, dataEntrega: str, codigoOrdemProducao: int, cliente: str, codigoMaterial: str, descricaoMaterial: str, quantidade: int, status: str, nfes: list[int]) -> None:
         # Cria uma nova instância de OP
-        instance = OrdemDeProducao(dataEntrega, codigoOrdemProducao, cliente, codigoMaterial, descricaoMaterial, quantidade, nfes)
+        instance = OrdemDeProducao(dataEntrega, codigoOrdemProducao, cliente, codigoMaterial, descricaoMaterial, quantidade, status, nfes)
         cls.instances[instance.codigoOrdemProducao] = asdict(instance)
 
     @classmethod
@@ -34,4 +35,3 @@ class OrdensDeProducao:
     def save_json_file(cls, file_name: str = "ordens_de_producao.json"):
         with open(file_name, "w", encoding="utf-8") as file:
             json.dump({"ordensDeProducao": cls.instances}, file, indent=4, ensure_ascii=False)
-            

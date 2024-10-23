@@ -7,8 +7,8 @@ class Scraping:
     def init_scraping(self) -> str:
         try:
             login_payload = {
-              "LoginForm[username]": "",
-              "LoginForm[password]": "",
+              "LoginForm[username]": "rafael.costa",
+              "LoginForm[password]": "R869200.14e",
               "LoginForm[codigoConexao]": "31.1~78,8^56,8",
               "yt0": "Entrar"
             }
@@ -21,8 +21,8 @@ class Scraping:
                 'OrdemProducao[forecast]': '0',
                 'OrdemProducao[_inicioCriacao]': '',
                 'OrdemProducao[_fimCriacao]': '',
-                'OrdemProducao[_inicioEntrega]': '01/09/2024',
-                'OrdemProducao[_fimEntrega]': '02/09/2024',
+                'OrdemProducao[_inicioEntrega]': '10/10/2024',
+                'OrdemProducao[_fimEntrega]': '20/10/2024',
                 'OrdemProducao[_limparFiltro]': '0',
                 'pageSize': '20',
             }
@@ -47,9 +47,10 @@ class Scraping:
                     codigoMaterial: str = tr.find_all("td")[4].get_text(separator='', strip=True)
                     descricaoMaterial: str = tr.find_all("td")[5].get_text(separator='', strip=True)
                     quantidade: int = int(tr.find_all("td")[6].get_text(separator='', strip=True))
+                    status: str = (tr.find_all("td")[7].get_text(separator='', strip=True))
                     nfes: list[int] = [int(nfe) for nfe in tr.find_all("td")[10].get_text(separator='', strip=True).split("-") if nfe.isdigit()]
 
-                    Ops.create(dataEntrega, codigoOrdemProducao, cliente, codigoMaterial, descricaoMaterial, quantidade, nfes)
+                    Ops.create(dataEntrega, codigoOrdemProducao, cliente, codigoMaterial, descricaoMaterial, quantidade, status, nfes)
 
                 # Formatando as ordens de produção para formato JSON decofidicado para UTF-8
                 json_string: str = Ops.to_json()
@@ -63,5 +64,5 @@ class Scraping:
                 return
 
         except requests.exceptions.RequestException as e:
-            print("error: %s" % e)
-            
+            print(f"error: {e}")
+
